@@ -1,0 +1,128 @@
+<div class="register-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Registrierung</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <!-- Login & Passwort -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Benutzername</mat-label>
+          <input matInput formControlName="loginName" autocomplete="username">
+          @if (registerForm.get('loginName')?.hasError('required') && registerForm.get('loginName')?.touched) {
+            <mat-error>Benutzername ist erforderlich</mat-error>
+          }
+          @if (registerForm.get('loginName')?.hasError('minlength')) {
+            <mat-error>Mindestens 3 Zeichen</mat-error>
+          }
+          @if (registerForm.get('loginName')?.hasError('loginNameTaken')) {
+            <mat-error>Benutzername ist bereits vergeben</mat-error>
+          }
+          @if (registerForm.get('loginName')?.pending) {
+            <mat-hint>Prüfe Verfügbarkeit...</mat-hint>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Passwort</mat-label>
+          <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="passwort" autocomplete="new-password">
+          <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          @if (registerForm.get('passwort')?.hasError('required') && registerForm.get('passwort')?.touched) {
+            <mat-error>Passwort ist erforderlich</mat-error>
+          }
+          @if (registerForm.get('passwort')?.hasError('minlength')) {
+            <mat-error>Mindestens 4 Zeichen</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Passwort bestätigen</mat-label>
+          <input matInput type="password" formControlName="passwortConfirm" autocomplete="new-password">
+          @if (registerForm.hasError('passwordMismatch') && registerForm.get('passwortConfirm')?.touched) {
+            <mat-error>Passwörter stimmen nicht überein</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Persönliche Daten -->
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Vorname</mat-label>
+            <input matInput formControlName="vorname">
+            @if (registerForm.get('vorname')?.hasError('required') && registerForm.get('vorname')?.touched) {
+              <mat-error>Erforderlich</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Nachname</mat-label>
+            <input matInput formControlName="nachname">
+            @if (registerForm.get('nachname')?.hasError('required') && registerForm.get('nachname')?.touched) {
+              <mat-error>Erforderlich</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <!-- Adresse -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Straße und Hausnummer</mat-label>
+          <input matInput formControlName="strasse">
+          @if (registerForm.get('strasse')?.hasError('required') && registerForm.get('strasse')?.touched) {
+            <mat-error>Erforderlich</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="plz-field">
+            <mat-label>PLZ</mat-label>
+            <input matInput formControlName="plz" (blur)="onPlzBlur()">
+            @if (registerForm.get('plz')?.hasError('pattern')) {
+              <mat-error>Ungültige PLZ</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="ort-field">
+            <mat-label>Ort</mat-label>
+            <input matInput formControlName="ort">
+            @if (registerForm.get('ort')?.hasError('required') && registerForm.get('ort')?.touched) {
+              <mat-error>Erforderlich</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Land</mat-label>
+          <input matInput formControlName="land">
+        </mat-form-field>
+
+        <!-- Kontakt -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Telefon</mat-label>
+          <input matInput formControlName="telefon" type="tel">
+          @if (registerForm.get('telefon')?.hasError('required') && registerForm.get('telefon')?.touched) {
+            <mat-error>Erforderlich</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>E-Mail</mat-label>
+          <input matInput formControlName="email" type="email">
+          @if (registerForm.get('email')?.hasError('email')) {
+            <mat-error>Ungültige E-Mail-Adresse</mat-error>
+          }
+          @if (registerForm.get('email')?.hasError('required') && registerForm.get('email')?.touched) {
+            <mat-error>Erforderlich</mat-error>
+          }
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="registerForm.invalid || registerForm.pending" class="full-width">
+          Registrieren
+        </button>
+      </form>
+    </mat-card-content>
+    <mat-card-actions>
+      <a mat-button routerLink="/auth/login">Bereits registriert? Anmelden</a>
+    </mat-card-actions>
+  </mat-card>
+</div>

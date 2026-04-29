@@ -1,0 +1,41 @@
+<div class="monitoring-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Überwachungsliste</mat-card-title>
+      <mat-card-subtitle>Standorte anderer Benutzer beobachten</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="actions">
+        <button mat-raised-button color="primary" (click)="openAddUserDialog()">
+          <mat-icon>person_add</mat-icon> Benutzer hinzufügen
+        </button>
+        <button mat-stroked-button (click)="refreshPositions()">
+          <mat-icon>refresh</mat-icon> Positionen aktualisieren
+        </button>
+      </div>
+
+      @if (watchedUsers.length === 0) {
+        <p class="empty-message">Keine Benutzer in der Überwachungsliste. Füge Benutzer hinzu, um ihre Standorte zu sehen.</p>
+      } @else {
+        <mat-list>
+          @for (user of watchedUsers; track user.loginName) {
+            <mat-list-item>
+              <mat-icon matListItemIcon>person_pin</mat-icon>
+              <div matListItemTitle>{{ user.vorname }} {{ user.nachname }} ({{ user.loginName }})</div>
+              <div matListItemLine>
+                @if (user.standort) {
+                  📍 {{ user.standort.breitengrad | number:'1.5-5' }}, {{ user.standort.laengengrad | number:'1.5-5' }}
+                } @else {
+                  Kein Standort verfügbar
+                }
+              </div>
+              <button mat-icon-button matListItemMeta (click)="removeUser(user.loginName)" color="warn">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </mat-list-item>
+          }
+        </mat-list>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,64 @@
+<div class="location-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Standortpflege</mat-card-title>
+      <mat-card-subtitle>Aktuellen Standort setzen oder automatisch melden</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      @if (currentStandort) {
+        <div class="current-location">
+          <p><strong>Aktueller Standort:</strong> {{ currentStandort.breitengrad | number:'1.5-5' }}, {{ currentStandort.laengengrad | number:'1.5-5' }}</p>
+        </div>
+        <div class="map-container">
+          <iframe
+            [src]="mapUrl"
+            width="100%"
+            height="300"
+            frameborder="0"
+            allowfullscreen>
+          </iframe>
+        </div>
+      }
+
+      <form [formGroup]="locationForm" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Breitengrad</mat-label>
+            <input matInput type="number" formControlName="breitengrad" step="0.00001">
+            @if (locationForm.get('breitengrad')?.hasError('required') && locationForm.get('breitengrad')?.touched) {
+              <mat-error>Erforderlich</mat-error>
+            }
+            @if (locationForm.get('breitengrad')?.hasError('min') || locationForm.get('breitengrad')?.hasError('max')) {
+              <mat-error>Wert zwischen -90 und 90</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Längengrad</mat-label>
+            <input matInput type="number" formControlName="laengengrad" step="0.00001">
+            @if (locationForm.get('laengengrad')?.hasError('required') && locationForm.get('laengengrad')?.touched) {
+              <mat-error>Erforderlich</mat-error>
+            }
+            @if (locationForm.get('laengengrad')?.hasError('min') || locationForm.get('laengengrad')?.hasError('max')) {
+              <mat-error>Wert zwischen -180 und 180</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="button-row">
+          <button mat-raised-button color="primary" type="submit" [disabled]="locationForm.invalid">
+            <mat-icon>save</mat-icon> Standort setzen
+          </button>
+          <button mat-stroked-button type="button" (click)="useCurrentPosition()">
+            <mat-icon>my_location</mat-icon> GPS verwenden
+          </button>
+          <button mat-stroked-button type="button" (click)="toggleAutoUpdate()"
+                  [color]="autoUpdateActive ? 'warn' : 'primary'">
+            <mat-icon>{{ autoUpdateActive ? 'stop' : 'play_arrow' }}</mat-icon>
+            {{ autoUpdateActive ? 'Auto-Meldung stoppen' : 'Auto-Meldung starten' }}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -1,0 +1,25 @@
+<h2 mat-dialog-title>Benutzer zur Überwachung hinzufügen</h2>
+<mat-dialog-content>
+  <mat-form-field appearance="outline" class="full-width">
+    <mat-label>Suchen</mat-label>
+    <input matInput [(ngModel)]="searchText" (ngModelChange)="filterUsers()" placeholder="Name oder Login suchen...">
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+
+  @if (filteredUsers.length === 0) {
+    <p class="empty">Keine Benutzer gefunden.</p>
+  } @else {
+    <mat-selection-list [multiple]="false">
+      @for (user of filteredUsers; track user.loginName) {
+        <mat-list-option (click)="selectUser(user)">
+          <mat-icon matListItemIcon>person</mat-icon>
+          <span matListItemTitle>{{ user.vorname }} {{ user.nachname }}</span>
+          <span matListItemLine>{{ user.loginName }}</span>
+        </mat-list-option>
+      }
+    </mat-selection-list>
+  }
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Abbrechen</button>
+</mat-dialog-actions>

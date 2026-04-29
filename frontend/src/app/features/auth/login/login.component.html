@@ -1,0 +1,36 @@
+<div class="login-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Anmelden</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Benutzername</mat-label>
+          <input matInput formControlName="loginName" autocomplete="username">
+          @if (loginForm.get('loginName')?.hasError('required') && loginForm.get('loginName')?.touched) {
+            <mat-error>Benutzername ist erforderlich</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Passwort</mat-label>
+          <input matInput [type]="hidePassword ? 'password' : 'text'" formControlName="passwort" autocomplete="current-password">
+          <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" type="button">
+            <mat-icon>{{ hidePassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+          @if (loginForm.get('passwort')?.hasError('required') && loginForm.get('passwort')?.touched) {
+            <mat-error>Passwort ist erforderlich</mat-error>
+          }
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid" class="full-width">
+          Anmelden
+        </button>
+      </form>
+    </mat-card-content>
+    <mat-card-actions>
+      <a mat-button routerLink="/auth/register">Noch kein Konto? Registrieren</a>
+    </mat-card-actions>
+  </mat-card>
+</div>

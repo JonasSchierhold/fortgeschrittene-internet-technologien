@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
+import { CommonModule, DecimalPipe } from '@angular/common';
 import {
   ReactiveFormsModule,
   FormBuilder,
@@ -18,11 +19,13 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatIconModule } from '@angular/material/icon';
 import { UserService, GeoService } from '../../../core/services';
 import { User } from '../../../core/models';
+import { LocationMapComponent } from '../location-map/location-map.component';
 
 @Component({
   selector: 'app-register',
   standalone: true,
   imports: [
+    CommonModule,
     ReactiveFormsModule,
     RouterModule,
     MatCardModule,
@@ -32,6 +35,7 @@ import { User } from '../../../core/models';
     MatSelectModule,
     MatSnackBarModule,
     MatIconModule,
+    LocationMapComponent,
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.sass',
@@ -39,6 +43,11 @@ import { User } from '../../../core/models';
 export class RegisterComponent {
   registerForm: FormGroup;
   hidePassword = true;
+  
+  // Mathematische Aufgabe für CAPTCHA
+  mathNumber1: number;
+  mathNumber2: number;
+  correctAnswer: number;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -47,26 +56,37 @@ export class RegisterComponent {
     private readonly router: Router,
     private readonly snackBar: MatSnackBar,
   ) {
-    this.registerForm = this.fb.group(
-      {
-        loginName: [
-          '',
-          [Validators.required, Validators.minLength(3)],
-          [this.loginNameValidator.bind(this)],
-        ],
-        passwort: ['', [Validators.required, Validators.minLength(4)]],
-        passwortConfirm: ['', [Validators.required]],
-        vorname: ['', Validators.required],
-        nachname: ['', Validators.required],
-        strasse: ['', Validators.required],
-        plz: ['', [Validators.required, Validators.pattern(/^\d{4,5}$/)]],
-        ort: ['', Validators.required],
-        land: ['Deutschland', Validators.required],
-        telefon: ['', Validators.required],
-        email: ['', [Validators.required, Validators.email]],
-      },
-      { validators: this.passwordMatchValidator },
-    );
+    // Generiere zwei Zufallszahlen <= 99
+    this.mathNumber1 = Math.floor(Math.random() * 100);
+    this.mathNumber2 = Math.floor(Math.random() * 100);
+    this.correctAnswer = this.mathNumber1 + this.mathNumber2;
+    
+    this.registerForm = this.fb.group({
+      loginName: [
+        '',
+        [Validators.required, Validators.minLength(3)],
+        [this.loginNameValidator.bind(this)],
+      ],
+      passwort: ['', [Validators.required, Validators.minLength(4)]],
+      passwortConfirm: ['', [Validators.required]],
+      vorname: ['', Validators.required],
+      nachname: ['', Validators.required],
+      strasse: ['', Validators.required],
+      plz: ['', [Validators.required, Validators.pattern(/^\d{4,5}$/)]],
+      ort: ['', Validators.required],
+      land: ['Deutschland', Validators.required],
+      telefon: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      mathAnswer: ['', [Validators.required, this.mathAnswerValidator.bind(this)]],
+    });
+
+    // Füge den Passwort-Match-Validator zum Bestätigungsfeld hinzu
+    this.registerForm.get('passwortConfirm')?.addValidators(this.confirmPasswordValidator.bind(this));
+
+    // Aktualisiere die Validierung wenn das Passwort sich ändert
+    this.registerForm.get('passwort')?.valueChanges.subscribe(() => {
+      this.registerForm.get('passwortConfirm')?.updateValueAndValidity();
+    });
   }
 
   onPlzBlur(): void {
@@ -135,9 +155,20 @@ export class RegisterComponent {
     );
   }
 
-  private passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
-    const password = group.get('passwort')?.value;
-    const confirm = group.get('passwortConfirm')?.value;
-    return password === confirm ? null : { passwordMismatch: true };
+  private confirmPasswordValidator(control: AbstractControl): ValidationErrors | null {
+    if (!control.value) {
+      return null; // required validator handles empty
+    }
+    const password = this.registerForm?.get('passwort')?.value;
+    return control.value === password ? null : { passwordMismatch: true };
+  }
+
+  private mathAnswerValidator(control: AbstractControl): ValidationErrors | null {
+    const userAnswer = control.value;
+    if (userAnswer === null || userAnswer === '') {
+      return null; // required validator handles this
+    }
+    const answer = parseInt(userAnswer, 10);
+    return answer === this.correctAnswer ? null : { incorrectAnswer: true };
   }
 }

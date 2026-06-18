@@ -1,10 +1,11 @@
 <div class="register-container">
+  <!-- Registration Form Section with Embedded Map -->
   <mat-card>
     <mat-card-header>
       <mat-card-title>Registrierung</mat-card-title>
     </mat-card-header>
     <mat-card-content>
-      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <form [formGroup]="registerForm">
         <!-- Login & Passwort -->
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Benutzername</mat-label>
@@ -40,7 +41,10 @@
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>Passwort bestätigen</mat-label>
           <input matInput type="password" formControlName="passwortConfirm" autocomplete="new-password">
-          @if (registerForm.hasError('passwordMismatch') && registerForm.get('passwortConfirm')?.touched) {
+          @if (registerForm.get('passwortConfirm')?.hasError('required') && registerForm.get('passwortConfirm')?.touched) {
+            <mat-error>Passwort-Bestätigung ist erforderlich</mat-error>
+          }
+          @if (registerForm.get('passwortConfirm')?.hasError('passwordMismatch')) {
             <mat-error>Passwörter stimmen nicht überein</mat-error>
           }
         </mat-form-field>
@@ -116,8 +120,31 @@
           }
         </mat-form-field>
 
-        <button mat-raised-button color="primary" type="submit" [disabled]="registerForm.invalid || registerForm.pending" class="full-width">
-          Registrieren
+        <!-- Mathematische Aufgabe / CAPTCHA -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Sicherheitsfrage: {{ mathNumber1 }} + {{ mathNumber2 }} = ?</mat-label>
+          <input matInput formControlName="mathAnswer" type="number" placeholder="Bitte berechnen Sie die Summe">
+          @if (registerForm.get('mathAnswer')?.hasError('required') && registerForm.get('mathAnswer')?.touched) {
+            <mat-error>Bitte lösen Sie die Aufgabe</mat-error>
+          }
+          @if (registerForm.get('mathAnswer')?.hasError('incorrectAnswer')) {
+            <mat-error>Falsche Antwort, bitte versuchen Sie es erneut</mat-error>
+          }
+        </mat-form-field>
+
+        <!-- Standort-Karte -->
+        <div class="location-preview">
+          <h3>Standort-Vorschau</h3>
+          <app-location-map
+            [strasse]="registerForm.get('strasse')?.value || ''"
+            [plz]="registerForm.get('plz')?.value || ''"
+            [ort]="registerForm.get('ort')?.value || ''"
+            [land]="registerForm.get('land')?.value || 'Deutschland'"
+          ></app-location-map>
+        </div>
+
+        <button mat-raised-button color="primary" type="button" [disabled]="registerForm.invalid" (click)="onSubmit()" class="full-width">
+          Registrierung abschließen
         </button>
       </form>
     </mat-card-content>

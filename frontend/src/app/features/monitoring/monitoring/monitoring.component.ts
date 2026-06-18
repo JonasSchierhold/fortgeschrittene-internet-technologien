@@ -33,7 +33,7 @@ export class MonitoringComponent implements OnInit, OnDestroy {
   private pollingInterval: ReturnType<typeof setInterval> | null = null;
 
   constructor(
-    private readonly watchlistService: WatchlistService,
+    readonly watchlistService: WatchlistService,
     private readonly locationService: LocationService,
     private readonly authService: AuthService,
     private readonly dialog: MatDialog,

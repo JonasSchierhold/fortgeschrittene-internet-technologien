@@ -23,6 +23,10 @@ export interface UserListEntry {
   loginName: string;
   vorname: string;
   nachname: string;
+  strasse?: string;
+  plz?: string;
+  ort?: string;
+  land?: string;
 }
 
 export interface UserListResponse {

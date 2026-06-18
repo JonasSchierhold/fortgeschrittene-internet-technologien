@@ -20,7 +20,7 @@
         <mat-list>
           @for (user of watchedUsers; track user.loginName) {
             <mat-list-item>
-              <mat-icon matListItemIcon>person_pin</mat-icon>
+              <mat-icon matListItemIcon [style.color]="watchlistService.getColorStyle(user.color || 'green')">fiber_manual_record</mat-icon>
               <div matListItemTitle>{{ user.vorname }} {{ user.nachname }} ({{ user.loginName }})</div>
               <div matListItemLine>
                 @if (user.standort) {

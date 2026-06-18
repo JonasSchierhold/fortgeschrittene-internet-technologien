@@ -19,6 +19,15 @@ export class AuthService {
     this.restoreSession();
   }
 
+  private restoreSession(): void {
+    const sessionId = sessionStorage.getItem('sessionId');
+    const loginName = sessionStorage.getItem('loginName');
+    if (sessionId && loginName) {
+      this._sessionId.set(sessionId);
+      this._loginName.set(loginName);
+    }
+  }
+
   login(loginName: string, passwort: string): Observable<LoginResponse> {
     const body: LoginRequest = {
       loginName,
@@ -49,14 +58,5 @@ export class AuthService {
     this._loginName.set(null);
     sessionStorage.removeItem('sessionId');
     sessionStorage.removeItem('loginName');
-  }
-
-  private restoreSession(): void {
-    const sessionId = sessionStorage.getItem('sessionId');
-    const loginName = sessionStorage.getItem('loginName');
-    if (sessionId && loginName) {
-      this._sessionId.set(sessionId);
-      this._loginName.set(loginName);
-    }
   }
 }

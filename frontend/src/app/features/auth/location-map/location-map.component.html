@@ -1,0 +1,38 @@
+<mat-card class="location-card">
+  <mat-card-header>
+    <mat-card-title>Standort Vorschau</mat-card-title>
+    <mat-card-subtitle>Ihre eingegebene Adresse auf der Karte</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="map-container">
+      @if (isLoading) {
+        <div class="loading-overlay">
+          <mat-spinner></mat-spinner>
+          <p>Karte wird geladen...</p>
+        </div>
+      }
+      <div #mapContainer id="map"></div>
+    </div>
+
+    @if (locationData) {
+      <div class="location-info">
+        <h3>Gefundener Standort:</h3>
+        <p>
+          <strong>Breitengrad:</strong>
+          {{ locationData!.latitude | number : '1.5-5' }}
+        </p>
+        <p>
+          <strong>Längengrad:</strong>
+          {{ locationData!.longitude | number : '1.5-5' }}
+        </p>
+        @if (locationData!.plz) {
+          <p><strong>PLZ:</strong> {{ locationData!.plz }}</p>
+        }
+        @if (locationData!.ort) {
+          <p><strong>Ort:</strong> {{ locationData!.ort }}</p>
+        }
+      </div>
+    }
+  </mat-card-content>
+</mat-card>

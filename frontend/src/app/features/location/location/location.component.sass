@@ -2,26 +2,29 @@
   padding: 24px
   display: flex
   justify-content: center
+  background: #121212
 
   mat-card
-    max-width: 600px
+    max-width: 900px
     width: 100%
+    background: #1e1e1e !important
+    color: #ffffff
+
+.map-wrapper
+  margin-bottom: 16px
+
+.map-container
+  height: 400px
+  width: 100%
+  border-radius: 8px
+  overflow: hidden
+  border: 1px solid rgba(255, 255, 255, 0.12)
 
 .current-location
   margin-bottom: 16px
   padding: 12px
   border-radius: 8px
-  background: rgba(0, 0, 0, 0.04)
-
-.map-container
-  margin-bottom: 16px
-  border-radius: 8px
-  overflow: hidden
-
-  iframe
-    display: block
-    border: none
-    border-radius: 8px
+  background: rgba(255, 255, 255, 0.05)
 
 .form-row
   display: flex
@@ -35,3 +38,53 @@
   gap: 12px
   flex-wrap: wrap
   margin-top: 8px
+
+.friends-section
+  margin-top: 24px
+  padding-top: 24px
+  border-top: 1px solid rgba(255, 255, 255, 0.12)
+
+  .section-header
+    display: flex
+    justify-content: space-between
+    align-items: center
+    margin-bottom: 16px
+
+    h3
+      margin: 0
+      font-size: 18px
+      font-weight: 500
+
+    .actions
+      display: flex
+      gap: 8px
+      align-items: center
+
+  .empty-message
+    padding: 16px
+    text-align: center
+    color: rgba(255, 255, 255, 0.6)
+    background: rgba(255, 255, 255, 0.05)
+    border-radius: 8px
+    display: flex
+    align-items: center
+    justify-content: center
+    gap: 8px
+
+    mat-icon
+      vertical-align: middle
+
+  mat-chip-set
+    margin-top: 8px
+
+  .clickable-chip
+    cursor: pointer
+    transition: transform 0.2s ease, box-shadow 0.2s ease
+
+    &:hover
+      transform: translateY(-2px)
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3)
+
+  .chip-location
+    font-size: 0.85em
+    color: rgba(255, 255, 255, 0.6)
